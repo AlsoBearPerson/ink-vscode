@@ -17,7 +17,7 @@
         "vscode": "^1.16.0"
     },
     "categories": [
-        "Languages"
+        "Programming Languages"
     ],
     "activationEvents": [
         "onLanguage:ink"
@@ -64,7 +64,8 @@
     },
     "devDependencies": {
         "@types/node": "^8.0.34",
+        "@types/vscode": "^1.61.0",
         "typescript": "^2.5.3",
-        "vscode": "^1.1.6"
+        "vscode-test": "^1.6.1"
     }
 }
