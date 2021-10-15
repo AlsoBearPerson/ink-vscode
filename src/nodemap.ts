@@ -22,10 +22,12 @@ class DivertTarget {
 
 class LabelNode extends DivertTarget {
 
+    //@ts-ignore
     public get line () {
         return this._line + this.parentStitch.startLine;
     }
 
+    //@ts-ignore
     public get parentFile () {
         return this.parentStitch.parentKnot.parentFile;
     }
@@ -44,6 +46,7 @@ class LabelNode extends DivertTarget {
 class StitchNode extends DivertTarget {
     public readonly labels : LabelNode[]
 
+    //@ts-ignore
     public get line () {
         return this.startLine;
     }
@@ -52,6 +55,7 @@ class StitchNode extends DivertTarget {
         return this.parentKnot.startLine + this._relativeStart;
     }
 
+    //@ts-ignore
     public get parentFile () {
         return this.parentKnot.parentFile;
     }
@@ -84,6 +88,7 @@ class KnotNode extends DivertTarget {
 
     public readonly stitches;
 
+    //@ts-ignore
     public get line () {
         return this.startLine;
     }
@@ -213,8 +218,8 @@ function getIncludeScope (filePath : string, knownScope : string[] = []) : strin
     if (knownScope.indexOf(filePath) === -1) knownScope.push(filePath);
     const newScope = fileMap.includes.filter(include => knownScope.indexOf(include) === -1);
     if (newScope.length < 1) return knownScope;
-    return getIncludeScope(filePath, getIncludeScope(newScope[0], knownScope));
-
+    newScope.forEach(newInclude => knownScope = getIncludeScope(newInclude, knownScope));
+    return knownScope;
 }
 
 function stitchFor (filePath : string, line : number) : StitchNode | null {
