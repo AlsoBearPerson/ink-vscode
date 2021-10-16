@@ -11,6 +11,18 @@ Support for Inkle's [Ink](https://github.com/inkle/ink) language in Visual Studi
 - Node (knot/stitch) count in Ink files.
 - Sensible language configuration defaults for Ink.
 
+## Publishing
+
+> Since this is a fork, I'm not publishing to the VS Code Marketplace, and am instead only publishing locally.
+
+To package the extension:
+
+	npm run package
+
+To install it thereafter:
+
+	code --install-extension <output>.vsix
+
 ## Release Notes
 
 ### 1.3.0
