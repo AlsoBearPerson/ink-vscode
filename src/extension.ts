@@ -6,6 +6,7 @@ import { WordAndNodeCounter, WordNodeCounterController } from "./wordcount";
 import { DivertCompletionProvider } from "./completion";
 import * as NodeMap from "./nodemap";
 import { InkDefinitionProvider } from "./definitions";
+import { InkDocumentSymbolProvider } from "./symbols";
 
 const INK : DocumentFilter = { language: 'ink' };
 
@@ -30,4 +31,7 @@ export function activate(ctx: ExtensionContext) {
 
     // Enable the definition provider.
     ctx.subscriptions.push(languages.registerDefinitionProvider(INK, new InkDefinitionProvider()));
+
+    // Enable the symbol provider.
+    ctx.subscriptions.push(languages.registerDocumentSymbolProvider(INK, new InkDocumentSymbolProvider()));
 }

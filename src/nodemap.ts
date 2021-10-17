@@ -140,7 +140,7 @@ class KnotNode extends DivertTarget {
     }
 }
 
-class NodeMap {
+export class NodeMap {
 
     public readonly knots : KnotNode[];
     public readonly includes : string[];
