@@ -11,11 +11,9 @@ export class InkDefinitionProvider implements DefinitionProvider {
         const after = new Range(position, lineEnd);
         const beforeText = document.getText(before);
         const afterText = document.getText(after);
-        const beforeMatch = beforeText.match(/(->\s*\w*)$/)[1];
-        const afterMatch = afterText.match(/^([\w\.]*)\s*/)[1];
-        if (!(beforeMatch && afterMatch)) return;
-        const name = (beforeMatch + afterMatch).match(/->\s*([\w.]+)/)[1];
-        const [target] = name.split(".");
+        const beforeMatch = beforeText.match(/->\s*([\w\.]*)$/)[1];
+        const afterMatch = afterText.match(/^([\w\.]*)/)[1];
+        const [target] = ((beforeMatch ?? "") + (afterMatch ?? "")).split(".");
         return getDefinitionByNameAndScope(target, document.uri.fsPath, position.line);
 
     }
