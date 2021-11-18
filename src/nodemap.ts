@@ -144,6 +144,7 @@ export class NodeMap {
 
     public readonly knots : KnotNode[];
     public readonly includes : string[];
+    public readonly diverts : string[];
 
     private constructor (public filePath : string, fileText : string) {
         const lines = fileText.split("\n");
@@ -179,6 +180,9 @@ export class NodeMap {
                 const dirname = path.dirname(filePath);
                 return path.normalize(dirname + path.sep +  filename);
             });
+        this.diverts = lines
+            .filter(line => line.match(/(->|<-) ?(\w+)/))
+            .map(line => line.match(/(->|<-) ?(\w+)/)[2]);
     }
 
     public static from (filePath : string) : Promise<NodeMap> {
@@ -199,7 +203,6 @@ export class NodeMap {
 }
 
 const nodeMaps : { [key: string]: NodeMap; } = {};
-let mapsDone : boolean = false;
 
 export function generateMaps () : Thenable<void> {
     return workspace.findFiles("**/*.ink")
@@ -208,7 +211,6 @@ export function generateMaps () : Thenable<void> {
         })
         .then((maps : NodeMap[]) => {
             maps.forEach(map => nodeMaps[map.filePath] = map);
-            mapsDone = true;
         });
 }
 
@@ -238,8 +240,22 @@ function stitchFor (filePath : string, line : number) : StitchNode | null {
     return stitch;
 }
 
-/* Gets the divert names that are in scope for a given line and file. */
-function getDivertsInScope (filePath: string, line : number) : DivertTarget[] {
+/* Finds all -> diverts in scope and returns all the target names they're pointing to */
+function getDivertsInScope (filePath : string, line : number) : string[] {
+    if (nodeMaps[filePath]) {
+        // De-dupe the results by dumping them into a new Set
+        return Array.from(new Set(
+            getIncludeScope(filePath)
+                .map(path => nodeMaps[path].diverts)
+                .reduce((a, b) => a.concat(b))
+        ));
+    }
+    console.log(`Node map missing for file ${filePath}`);
+    return [];
+}
+
+/* Finds all divert targets (knots, labels, etc.) in scope for a given line and file. */
+function getDivertTargetsInScope (filePath: string, line : number) : DivertTarget[] {
     if (nodeMaps[filePath]) {
         let targets : DivertTarget[] = [];
         const scope = getIncludeScope(filePath);
@@ -266,17 +282,26 @@ function getDivertsInScope (filePath: string, line : number) : DivertTarget[] {
 }
 
 export function getDefinitionByNameAndScope (name: string, filePath : string, line : number) : Location {
-    const divert = getDivertsInScope(filePath, line)
+    const divert = getDivertTargetsInScope(filePath, line)
         .find(target => target.name === name);
     return new Location(Uri.file(divert.parentFile.filePath), new Position(divert.line, 0));
 }
 
-/* Returns completion items for divert target names for a given line and file. */
-export function getDivertCompletionTargets (filePath : string, line : number) : CompletionItem[] {
-    return getDivertsInScope(filePath, line)
+/* Returns completion items for divert target names when typing a divert -> */
+export function getDivertTargetCompletionItems (filePath : string, line : number) : CompletionItem[] {
+    return getDivertTargetsInScope(filePath, line)
         .filter(target => target.name !== null)
         .map(target => target.toCompletionItem())
         .concat(PERMANENT_DIVERTS);
+}
+
+/* Returns completion items for as-yet-undeclared divert target names when typing a knot header == */
+export function getDivertCompletionItems (filePath : string, line : number) : CompletionItem[] {
+    const divertTargets = getDivertTargetsInScope(filePath, line);
+    return getDivertsInScope(filePath, line)
+        .filter(divert => !divertTargets.find(divertTarget => divertTarget.name === divert)) // Ignore diverts whose targets already exist
+        .filter(divert => !PERMANENT_DIVERTS.find(permanentDivert => permanentDivert.label === divert)) // Ignore permanent diverts, e.g. END
+        .map(target => new CompletionItem(target, CompletionItemKind.Reference));
 }
 
 export class NodeController {

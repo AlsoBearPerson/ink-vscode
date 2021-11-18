@@ -5,12 +5,20 @@ import * as fs from "fs";
 export class DivertCompletionProvider implements CompletionItemProvider {
 
     public provideCompletionItems (document: TextDocument, position: Position) : CompletionItem[] {
-        // Make sure we are at the end of a valid divert arrow.
-        // Ignore a > at the start of a line.
         const before = document.getText(new Range(position.with(position.line, 0), position));
-        if (!/(->|<-) ?$/.test(before)) return;
-        if (/-> ?-> ?$/.test(before)) return;
-        return NodeMap.getDivertCompletionTargets(document.uri.fsPath, position.line);
+
+        // Provide knot completion if we are at the end of a valid divert arrow.
+        // Ignore a > at the start of a line.
+        if (/(->|<-) ?$/.test(before) && !/-> ?-> ?$/.test(before))
+        {
+            return NodeMap.getDivertTargetCompletionItems(document.uri.fsPath, position.line);
+        }
+
+        // Provide divert target completion if we are at the end of a knot specifier.
+        if (/^\s*===*?/.test(before))
+        {
+            return NodeMap.getDivertCompletionItems(document.uri.fsPath, position.line);
+        }
     }
 
 }
