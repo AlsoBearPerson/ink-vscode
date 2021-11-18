@@ -8,7 +8,7 @@ export class InkDocumentSymbolProvider implements DocumentSymbolProvider {
 			.filter(knot => knot.name !== null)
 			.map(knot => new SymbolInformation(
 				knot.name,
-				SymbolKind.Method,
+				knot.isFunction ? SymbolKind.Function : SymbolKind.Class,
 				knot.name,
 				new Location(document.uri, new Position(knot.line, 0))
 			));

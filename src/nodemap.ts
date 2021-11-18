@@ -99,7 +99,7 @@ class KnotNode extends DivertTarget {
         public readonly endLine : number,
         public readonly parentFile : NodeMap,
         textContent : string,
-        private readonly isFunction : boolean = false,
+        public readonly isFunction : boolean = false,
         private readonly lastLine : boolean = false
     ) {
         super(name);
@@ -135,7 +135,7 @@ class KnotNode extends DivertTarget {
     }
 
     public toCompletionItem () : CompletionItem {
-        const itemKind = this.isFunction ? CompletionItemKind.Function : CompletionItemKind.Reference;
+        const itemKind = this.isFunction ? CompletionItemKind.Function : CompletionItemKind.Class;
         return new CompletionItem(this.name, itemKind);
     }
 }
@@ -165,7 +165,7 @@ export class NodeMap {
                         }
                         if (index === lines.length - 1) {
                             // Found the last line
-                            const node = new KnotNode(lastName, lastStart, index + 1, this, currentNode.concat(line).join("\n"), false, true);
+                            const node = new KnotNode(lastName, lastStart, index + 1, this, currentNode.concat(line).join("\n"), isFunction, true);
                             nodes.push(node);
                             return { nodes, currentNode: [line], lastStart: index, lastName: null, isFunction };
                         }
