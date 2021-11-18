@@ -25,6 +25,13 @@ To install it thereafter:
 
 ## Release Notes
 
+### 1.3.1
+- Distinguish knots from functions in completion and go-to-symbol
+- Hooked up document symbol provider so Ctrl+Shift+O can be used to navigate to knots, stitches, labels, and functions
+- Suggest unimplemented diverts when typing a knot. When typing == suggest the names from any existing -> diverts that point to a divert target that hasn't been implemented yet.
+- Fix knot syntax parsing. Official docs indicate a knot is specified by two or more equals signs, but the previous regex only matched exactly three.
+- Fixed: More permissive cursor placement for Go to Definition. Navigation now works as expected when the cursor is placed immediately before the first character or immediately after the last character in the symbol.
+
 ### 1.3.0
 - Completions now support labels
 - Show definitions now works on knots as divert targets
