@@ -23,6 +23,30 @@ To install it thereafter:
 
 	code --install-extension <output>.vsix
 
+## Syntax highlighting
+
+This extension generates fairly comprehensive syntax highlighting scopes, but some color themes don't map root scopes, and in those color themes, the resulting syntax highlighting for ink files may be... less than optimal. Unless/until I figure out a better way, here's a quick theme patch that will at least explicitly highlight knots/stitches/labels/diverts:
+
+- Open user settings json or workspace settings json
+- Paste in the following:
+
+    "editor.tokenColorCustomizations": {
+        "textMateRules": [
+            {
+                "scope": [
+                    "meta.knot.declaration",
+                    "meta.stitch.declaration",
+                    "meta.label",
+                    "variable.divertTarget"
+                ],
+                "settings": {
+                    "fontStyle": "bold",
+                    "foreground": "#56c26d"
+                }
+            }
+        ]
+    }
+
 ## Release Notes
 
 ### 1.3.1
