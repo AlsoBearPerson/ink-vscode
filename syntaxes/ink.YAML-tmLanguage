@@ -117,11 +117,12 @@ repository:
     name: meta.gather
 
   multiLineLogic:
-    begin: '^\s*(\{)([\w_\s\*\/\-\+\&\|\%\<\>\.\(\)]+(:))?(?=[^}]+$)'
+    begin: '^\s*(\{)(([\w_\s\*\/\-\+\&\|\%\<\>\.\(\)]+)(:))?(?=[^}]+$)'
     beginCaptures:
       '0': {name: meta.logicBegin}
       '1': {name: keyword.operator.logic}
-      '3': {name: keyword.operator.logic}
+      '2': {name: meta.logic}
+      '4': {name: keyword.operator.logic}
     end: (\})
     endCaptures:
       '1': {name: keyword.operator}
@@ -130,10 +131,11 @@ repository:
     patterns:
       - match: '^\s*else\s*\:'
         name: conditional.else
-      - begin: '^\s*(-)\s?[^:]+(:)'
+      - begin: '^\s*(-)\s?([^:]+)(:)'
         beginCaptures:
           '1': {name: keyword.operator}
-          '2': {name: keyword.operator}
+          '2': {name: meta.logic}
+          '3': {name: keyword.operator}
         end: $\n?
         name: conditional.clause
         patterns:
@@ -142,9 +144,10 @@ repository:
       - {include: '#statements'}
 
   inlineConditional:
-      begin: '(\{)[^:\|\}]+:'
+      begin: '(\{)([^:\|\}]+):'
       beginCaptures:
         '1': {name: keyword.operator.inlineConditionalStart}
+        '2': {name: meta.logic}
       end: (\})
       endCaptures:
         '1': {name: keyword.operator.inlineConditionalEnd}

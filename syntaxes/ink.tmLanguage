@@ -359,7 +359,7 @@
       <key>multiLineLogic</key>
       <dict>
         <key>begin</key>
-        <string>^\s*(\{)([\w_\s\*\/\-\+\&amp;\|\%\&lt;\&gt;\.\(\)]+(:))?(?=[^}]+$)</string>
+        <string>^\s*(\{)(([\w_\s\*\/\-\+\&amp;\|\%\&lt;\&gt;\.\(\)]+)(:))?(?=[^}]+$)</string>
         <key>beginCaptures</key>
         <dict>
           <key>0</key>
@@ -372,7 +372,12 @@
             <key>name</key>
             <string>keyword.operator.logic</string>
           </dict>
-          <key>3</key>
+          <key>2</key>
+          <dict>
+            <key>name</key>
+            <string>meta.logic</string>
+          </dict>
+          <key>4</key>
           <dict>
             <key>name</key>
             <string>keyword.operator.logic</string>
@@ -402,7 +407,7 @@
           </dict>
           <dict>
             <key>begin</key>
-            <string>^\s*(-)\s?[^:]+(:)</string>
+            <string>^\s*(-)\s?([^:]+)(:)</string>
             <key>beginCaptures</key>
             <dict>
               <key>1</key>
@@ -411,6 +416,11 @@
                 <string>keyword.operator</string>
               </dict>
               <key>2</key>
+              <dict>
+                <key>name</key>
+                <string>meta.logic</string>
+              </dict>
+              <key>3</key>
               <dict>
                 <key>name</key>
                 <string>keyword.operator</string>
@@ -437,13 +447,18 @@
       <key>inlineConditional</key>
       <dict>
         <key>begin</key>
-        <string>(\{)[^:\|\}]+:</string>
+        <string>(\{)([^:\|\}]+):</string>
         <key>beginCaptures</key>
         <dict>
           <key>1</key>
           <dict>
             <key>name</key>
             <string>keyword.operator.inlineConditionalStart</string>
+          </dict>
+          <key>2</key>
+          <dict>
+            <key>name</key>
+            <string>meta.logic</string>
           </dict>
         </dict>
         <key>end</key>
