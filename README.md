@@ -29,7 +29,7 @@ This extension generates fairly comprehensive syntax highlighting scopes, but so
 
 - Open user settings json or workspace settings json
 - Paste in the following:
-
+```
     "editor.tokenColorCustomizations": {
         "textMateRules": [
             {
@@ -43,9 +43,20 @@ This extension generates fairly comprehensive syntax highlighting scopes, but so
                     "fontStyle": "bold",
                     "foreground": "#56c26d"
                 }
+            },
+            {
+                "scope": [
+                    "meta.logic",
+                    "conditional.clause",
+                ],
+                "settings": {
+                    "foreground": "#089c1c",
+                    "fontStyle": "italic"
+                }
             }
         ]
     }
+```
 
 ## Release Notes
 
